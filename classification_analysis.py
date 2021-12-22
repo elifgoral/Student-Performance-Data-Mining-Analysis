@@ -120,15 +120,48 @@ def grade_family_relation(data, family_mem, grade_num, family_mem_job):
         if isValidFamilyMemJob == False:
             raise ValueError("Invalid Family Member Job. It should be 'teacher' or 'health' or 'services' or 'at_home' or 'other'!")
 
-        member = family_mem_dict[family_mem]
-        series = data[data[member] == family_mem_job][grade_num].value_counts()
+        memberJob = family_mem_dict[family_mem]
+        series = data[data[memberJob] == family_mem_job][grade_num].value_counts()
         values = series.tolist()
         keys= series.keys().tolist()
         for i in range(len(values)):
-            print(f'{grade_num}={keys[i]} \t\t{member}={family_mem_job} num: {values[i]}')
+            print(f'{grade_num}={keys[i]} \t\t{memberJob}={family_mem_job} num: {values[i]}')
 
     except ValueError as exp:
         print ("Error", exp) 
+
+
+#   education values:
+#   0 - none
+#   1 - primary education (4th grade), 
+#   2 - 5th to 9th grade
+#   3 - secondary education
+#   4 - higher education
+def grade_family_education_relation(data,family_mem, grade_num, family_mem_edu):
+    try:
+        family_education_dict = {0:"none",1:"primary education (4th grade)",2:"5th to 9th grade",3:"secondary education",4:"higher education"}
+        isValidFamilyEdu = family_mem_edu in family_education_dict
+
+        family_mem_dict = {"mother":"Medu","father":"Fedu"}
+        isValidFamilyMem = family_mem in family_mem_dict
+
+        if isValidFamilyMem == False:
+            raise ValueError("Invalid Family Member. It should be 'mother' or 'father'!")
+
+        if isValidFamilyEdu == False:
+            raise ValueError("Invalid Family Member Education. It should be 0,1,2,3,4 !")
+
+        memberEdu = family_mem_dict[family_mem]
+        series = data[data[memberEdu] == family_mem_edu][grade_num].value_counts()
+        values = series.tolist()
+        keys= series.keys().tolist()
+        for i in range(len(values)):
+            print(f'{grade_num}={keys[i]} \t\t{memberEdu}={family_education_dict[family_mem_edu]} num: {values[i]}')
+
+    except ValueError as exp:
+        print ("Error", exp) 
+
+
 
 if __name__ == "__main__":
 
@@ -185,3 +218,4 @@ if __name__ == "__main__":
     # romantik olmayan öğrencilerin cinsiyete göre ayrımı (sayı)
     print(data[data["romantic"] == "no"]["sex"].value_counts())
     grade_family_relation(data,"father","G1","at_home")
+    grade_family_education_relation(data,"mother","G1",2)
