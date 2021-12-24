@@ -23,8 +23,24 @@ from sklearn.pipeline import Pipeline
 from sklearn.compose import make_column_transformer
 from sklearn.model_selection import KFold, cross_val_predict, train_test_split,GridSearchCV,cross_val_score
 from sklearn.metrics import accuracy_score,classification_report
+
+
+#importing plotly and cufflinks in offline mode
+import plotly.offline
+import plotly 
+import plotly.express as px
+import plotly.graph_objs as go
+import plotly.offline as py
+from plotly.offline import iplot
+from plotly.subplots import make_subplots
+import plotly.figure_factory as ff
 import warnings
 warnings.filterwarnings("ignore")
+
+
+pd.set_option('max_columns',100)
+pd.set_option('max_rows',900)
+pd.set_option('max_colwidth',200)
 
 
 # sütunların kaçar tane missing cell içerdiğini buluyor.
@@ -162,6 +178,26 @@ def grade_family_education_relation(data,family_mem, grade_num, family_mem_edu):
         print ("Error", exp) 
 
 
+def family_size_gender_relation():
+    probability_LE3_female = round(df[df["famsize"]=="LE3"]["sex"].value_counts(normalize=True)[0], 2)
+    probability_LE3_male = round(df[df["famsize"]=="LE3"]["sex"].value_counts(normalize=True)[1], 2)
+    probability_GT3_female = round(df[df["famsize"]=="GT3"]["sex"].value_counts(normalize=True)[0], 2)
+    probability_GT3_male = round(df[df["famsize"]=="GT3"]["sex"].value_counts(normalize=True)[1], 2)
+    print (f'A respondent, whose famsize is LE3, has a probability of {probability_LE3_female} of being female and {probability_LE3_male} of being male.')
+    print (f'A respondent, whose famsize is LE3, has a probability of {probability_GT3_female} of being female and {probability_GT3_male} of being male.')
+    fig = px.histogram(data_frame=data, x="famsize", color="sex", width=400, height=400)
+    fig.show()
+
+def family_size_school_relation():
+    probability_LE3_GP = round(df[df["famsize"]=="LE3"]["school"].value_counts(normalize=True)["GP"], 2)
+    probability_LE3_MS = round(df[df["famsize"]=="LE3"]["school"].value_counts(normalize=True)["MS"], 2)
+    probability_GT3_GP = round(df[df["famsize"]=="GT3"]["school"].value_counts(normalize=True)["GP"], 2)
+    probability_GT3_MS = round(df[df["famsize"]=="GT3"]["school"].value_counts(normalize=True)["MS"], 2)
+    print (f'A respondent, whose famsize is LE3, has a probability of {probability_LE3_GP} of being GP and {probability_LE3_MS} of being MS.')
+    print (f'A respondent, whose famsize is LE3, has a probability of {probability_GT3_GP} of being GP and {probability_GT3_MS} of being MS.')
+    fig = px.histogram(data_frame=data, x="famsize", color="school", width=400, height=400)
+    fig.show()
+
 
 if __name__ == "__main__":
 
@@ -217,5 +253,21 @@ if __name__ == "__main__":
     print(data[data["romantic"] == "no"]["sex"].value_counts(normalize=True))
     # romantik olmayan öğrencilerin cinsiyete göre ayrımı (sayı)
     print(data[data["romantic"] == "no"]["sex"].value_counts())
+    
+    print("grade and family job relation")
     grade_family_relation(data,"father","G1","at_home")
+    print()
+
+    print("grade and family education relation")
     grade_family_education_relation(data,"mother","G1",2)
+    print()
+
+    print("gender and family size relation")
+    family_size_gender_relation()
+    print()
+    
+    print("school and family size relation")
+    family_size_school_relation()
+    print()
+    
+
