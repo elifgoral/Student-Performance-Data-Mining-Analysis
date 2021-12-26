@@ -346,7 +346,6 @@ def convert_categorical_to_binary(data):
 
     return data
 
-
 def decisionTree(X_train,y_train):
     print("Decision Tree with max depth=5")
     decision_tree = tree.DecisionTreeClassifier(max_depth=5)
@@ -420,6 +419,21 @@ if __name__ == "__main__":
     # data'nın ilk 5 satırını getiriyor.
     print(data.head())
 
+    #   ilk önce grade'lar 0-20 arasında olduğu için hepsini 5 ile çarpıyorum.
+    data["G1"] = data["G1"].apply(lambda x: x * 5)
+    data["G2"] = data["G2"].apply(lambda x: x * 5)
+    data["G3"] = data["G3"].apply(lambda x: x * 5)
+
+    data['final_grade'] = 'NA'
+    data.loc[((data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) >= 90) & ( (data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) <= 100), 'final_grade'] = 'AA' 
+    data.loc[((data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) >= 80) & ( (data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) <= 89), 'final_grade'] = 'BA' 
+    data.loc[((data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) >= 70) & ( (data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) <= 79), 'final_grade'] = 'BB' 
+    data.loc[((data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) >= 60) & ( (data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) <= 69), 'final_grade'] = 'CB' 
+    data.loc[((data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) >= 50) & ( (data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) <= 59), 'final_grade'] = 'CC' 
+    data.loc[((data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) >= 45) & ( (data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) <= 49), 'final_grade'] = 'DC' 
+    data.loc[((data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) >= 40) & ( (data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) <= 45), 'final_grade'] = 'DD' 
+    data.loc[((data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) >= 0) & ( (data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) <= 40), 'final_grade'] = 'FF' 
+    print(data.head(50))
 
     # data'daki sex string olduğu için ve kıyaslanabilir bir şey olsun diye
     # F: 0 , M:1 yapıyoruz
@@ -499,7 +513,7 @@ if __name__ == "__main__":
     X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3,random_state=0)
     
 
-    
+
     # Prediction Probabilities:
     # random_forest_probs = random_forest.predict_proba(X_test)[:,1]
     # naive_bayes_probs = naive_bayes_classifier.predict_proba(X_test)[:,1]
