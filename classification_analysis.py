@@ -1,40 +1,23 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.model_selection import KFold,cross_val_score, RepeatedStratifiedKFold,StratifiedKFold
-from sklearn.impute import SimpleImputer
-from sklearn.pipeline import Pipeline
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from sklearn.preprocessing import OneHotEncoder,StandardScaler,PowerTransformer
-from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
-from sklearn.impute import SimpleImputer
-from sklearn.dummy import DummyClassifier
-from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.pipeline import make_pipeline
-from sklearn.pipeline import Pipeline
-from sklearn.compose import make_column_transformer
-from sklearn.model_selection import KFold, cross_val_predict, train_test_split,GridSearchCV,cross_val_score
-from sklearn.metrics import accuracy_score,classification_report
-
-
-#importing plotly and cufflinks in offline mode
-import plotly.offline
+from sklearn.model_selection import cross_val_predict, train_test_split, cross_val_score
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import tree
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import roc_auc_score,roc_curve
 import plotly 
 import plotly.express as px
-import plotly.graph_objs as go
-import plotly.offline as py
-from plotly.offline import iplot
-from plotly.subplots import make_subplots
-import plotly.figure_factory as ff
 import warnings
+from sklearn.metrics import classification_report
+from sklearn.metrics import roc_curve, auc
+from sklearn.multiclass import OneVsRestClassifier
+
 warnings.filterwarnings("ignore")
 
 
@@ -303,7 +286,65 @@ def gender_family_quality_relation(data, sex, feature):
     except ValueError as exp:
         print ("Error", exp) 
 
+def convert_categorical_to_binary(data):
+    # verisetindeki yes leri 1, no'ları 0 yapıyorum.
+    yes_no_column_names = ["schoolsup","famsup","paid","activities","nursery","higher","internet","romantic"]
+    for i in range(len(yes_no_column_names)):    
+        data[yes_no_column_names[i]] = np.where(data[yes_no_column_names[i]] =="no", 0, data[yes_no_column_names[i]])
+        data[yes_no_column_names[i]] = np.where(data[yes_no_column_names[i]] =="yes", 1, data[yes_no_column_names[i]])
+        data[yes_no_column_names[i]] = pd.to_numeric(data[yes_no_column_names[i]])
 
+    #   school: GP(Gabriel Pereira):1   MS(Mousinho da Silveira):0
+    data["school"] = np.where(data["school"] =="GP", 0, data["school"])
+    data["school"] = np.where(data["school"] =="MS", 1, data["school"])
+    data["school"] = pd.to_numeric(data["school"])
+
+    #   sex: F=1, M=0
+    data["sex"] = np.where(data["sex"] =="F", 0, data["sex"])
+    data["sex"] = np.where(data["sex"] =="M", 1, data["sex"])
+    data["sex"] = pd.to_numeric(data["sex"])
+
+    #   address: U(urban):1  R(rural):0
+    data["address"] = np.where(data["address"] =="U", 0, data["address"])
+    data["address"] = np.where(data["address"] =="R", 1, data["address"])
+    data["address"] = pd.to_numeric(data["address"])
+
+    #   famsize: LE3(less or equal to 3 ):1  GT3(greater than 3):0
+    data["famsize"] = np.where(data["famsize"] =="LE3", 0, data["famsize"])
+    data["famsize"] = np.where(data["famsize"] =="GT3", 1, data["famsize"])
+    data["famsize"] = pd.to_numeric(data["famsize"])
+
+    #   Pstatus: T(living together):0  A(apart):1
+    data["Pstatus"] = np.where(data["Pstatus"] =="T", 0, data["Pstatus"])
+    data["Pstatus"] = np.where(data["Pstatus"] =="A", 1, data["Pstatus"])
+    data["Pstatus"] = pd.to_numeric(data["Pstatus"])
+
+    
+    #   Mjob(mother's job): teacher:0 , health:1, services:2, at_home:3, other:4
+    #   Fjob(father's job): teacher:0 , health:1, services:2, at_home:3, other:4    
+    job = ["Mjob","Fjob"]
+    for i in range(2):
+        data[job[i]] = np.where(data[job[i]] =="teacher", 0, data[job[i]])
+        data[job[i]] = np.where(data[job[i]] =="health", 1, data[job[i]])
+        data[job[i]] = np.where(data[job[i]] =="services", 2, data[job[i]])
+        data[job[i]] = np.where(data[job[i]] =="at_home", 3, data[job[i]])
+        data[job[i]] = np.where(data[job[i]] =="other", 4, data[job[i]])
+        data[job[i]] = pd.to_numeric(data[job[i]])
+
+    #   reason: home:0  reputation:1    course:2    other:3
+    data["reason"] = np.where(data["reason"] =="home", 0, data["reason"])
+    data["reason"] = np.where(data["reason"] =="reputation", 1, data["reason"])
+    data["reason"] = np.where(data["reason"] =="course", 2, data["reason"])
+    data["reason"] = np.where(data["reason"] =="other", 3, data["reason"])
+    data["reason"] = pd.to_numeric(data["reason"])
+
+    #   guardian:   mother:0    father:1    other:2
+    data["guardian"] = np.where(data["guardian"] =="mother", 0, data["guardian"])
+    data["guardian"] = np.where(data["guardian"] =="father", 1, data["guardian"])
+    data["guardian"] = np.where(data["guardian"] =="other", 2, data["guardian"])
+    data["guardian"] = pd.to_numeric(data["guardian"])
+
+    return data
 
 
 if __name__ == "__main__":
@@ -328,7 +369,7 @@ if __name__ == "__main__":
 
     # column isimlerini, kaç satırda null olmadığını ve data tipini gösteriyor.
     print(df.info())
-
+    print(df.dtypes)
     # kaç tane aynı satırdan var bunu buluyor.
     print(df.duplicated().sum())
 
@@ -338,45 +379,174 @@ if __name__ == "__main__":
     print(f'Categorical Columns:  {get_categorical_columns(df)}')
     print(f'Categorical unique:  {get_categorical_number_of_unique(df)}')
 
-    sex_percentage(df)
-    romantic_percentage(df)
-    paid_percentage(df)
-    internet_access_percentage(df)
-    wish_higher_education_percentage(df)
-    nursery_school_history_percentage(df)
-    extra_curricular_activities_percentage(df)
-    family_support_percentage(df)
-    school_support_percentage(df)
+    # sex_percentage(df)
+    # romantic_percentage(df)
+    # paid_percentage(df)
+    # internet_access_percentage(df)
+    # wish_higher_education_percentage(df)
+    # nursery_school_history_percentage(df)
+    # extra_curricular_activities_percentage(df)
+    # family_support_percentage(df)
+    # school_support_percentage(df)
 
-    # print(df.head())
+    # # print(df.head())
 
-    numerical= data.select_dtypes('number').columns
-    categorical = data.select_dtypes('object').columns
-    # print(data[categorical])
-    # print(data[numerical])
+    # numerical= data.select_dtypes('number').columns
+    # categorical = data.select_dtypes('object').columns
+    # # print(data[categorical])
+    # # print(data[numerical])
 
 
-    # romantik olmayan öğrencilerin cinsiyete göre ayrımı (yüzdelik)
-    print(data[data["romantic"] == "no"]["sex"].value_counts(normalize=True))
-    # romantik olmayan öğrencilerin cinsiyete göre ayrımı (sayı)
-    print(data[data["romantic"] == "no"]["sex"].value_counts())
+    # # romantik olmayan öğrencilerin cinsiyete göre ayrımı (yüzdelik)
+    # print(data[data["romantic"] == "no"]["sex"].value_counts(normalize=True))
+    # # romantik olmayan öğrencilerin cinsiyete göre ayrımı (sayı)
+    # print(data[data["romantic"] == "no"]["sex"].value_counts())
     
-    print("grade and family job relation")
-    grade_family_relation(data,"father","G1","at_home")
-    print()
+    # print("grade and family job relation")
+    # grade_family_relation(data,"father","G1","at_home")
+    # print()
 
-    print("grade and family education relation")
-    grade_family_education_relation(data,"mother","G1",2)
-    print()
+    # print("grade and family education relation")
+    # grade_family_education_relation(data,"mother","G1",2)
+    # print()
 
-    print("gender and family size relation")
-    family_size_gender_relation(data)
-    print()
+    # print("gender and family size relation")
+    # family_size_gender_relation(data)
+    # print()
     
-    print("school and family size relation")
-    family_size_school_relation(data)
-    print()
+    # print("school and family size relation")
+    # family_size_school_relation(data)
+    # print()
     
-    gender_family_quality_relation(data,"male","famrel")
+    # gender_family_quality_relation(data,"male","famrel")
 
-    absences_gender_relation(data)
+    # absences_gender_relation(data)
+
+    data_converted = convert_categorical_to_binary(data)
+    data_converted = data_converted.drop(["G2","G3"],axis=1)
+    print(f'Categorical Columns:  {get_categorical_columns(data_converted)}')
+    print(data_converted.dtypes)
+    X = data_converted.values
+    y = data_converted["G1"].values
+    
+    # 30. column(yani G1'i siliyorum.)
+    X = np.delete(X,[30],axis=1)
+    X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3,random_state=0)
+    
+    #   decision tree    
+    print("Decision Tree with max depth=5")
+    decision_tree = tree.DecisionTreeClassifier(max_depth=5)
+    decision_tree.fit(X_train,y_train)
+    score = decision_tree.score(X_test,y_test)
+    print(score)
+    y_pred = decision_tree.predict(X_test)
+    print(y_pred)
+
+
+    #   Random Forest Classifier
+    print("random_forest with n_estimators=5")
+    random_forest = RandomForestClassifier(n_estimators=100)
+    random_forest.fit(X_train,y_train)
+    score = random_forest.score(X_test,y_test)
+    print(score)
+    y_pred = random_forest.predict(X_test)
+    print(y_pred)
+
+
+    #   Gradient Boosting Classifier
+    print("Gradient Boosting Classifier")
+    gradient_boosting = GradientBoostingClassifier()
+    gradient_boosting.fit(X_train,y_train)
+    score = gradient_boosting.score(X_test,y_test)
+    print(score)
+    y_pred = gradient_boosting.predict(X_test)
+    print(y_pred)
+
+
+    #   Gradient Boosting Classifier with  n_esitmators =40
+    print("Gradient Boosting Classifier n_estimator=40")
+    gradient_boosting_estimators_40 = GradientBoostingClassifier(n_estimators=40)
+    gradient_boosting_estimators_40.fit(X_train,y_train)
+    score = gradient_boosting_estimators_40.score(X_test,y_test)
+    print(score)
+    y_pred = gradient_boosting_estimators_40.predict(X_test)
+    print(y_pred)
+
+
+    #  Naive Bayes Classifier
+    print("Naive Bayes Classifier")
+    naive_bayes_classifier = GaussianNB()
+    naive_bayes_classifier.fit(X_train,y_train)
+    score = naive_bayes_classifier.score(X_test,y_test)
+    print(score)
+    y_pred = naive_bayes_classifier.predict(X_test)
+    print(y_pred)
+
+
+    #  K-Nearest Neighbor Classifier
+    print("K-Nearest Neighbor Classifier")
+    knn = KNeighborsClassifier(n_neighbors=3)
+    knn.fit(X_train,y_train)
+    score = knn.score(X_test,y_test)
+    print(score)
+    y_pred = knn.predict(X_test)
+    print(y_pred)
+
+    # Logistic Regression Classifier
+    print("Logistic Regression Classifier")
+    logistic_regression = LogisticRegression()
+    logistic_regression.fit(X_train,y_train)
+    score = logistic_regression.score(X_test,y_test)
+    print(score)
+    y_pred = logistic_regression.predict(X_test)
+    print(y_pred)
+
+    #   SVM Classifier
+    print("SVM Classifier")
+    svm = SVC(probability=True)
+    svm.fit(X_train,y_train)
+    score = svm.score(X_test,y_test)
+    print(score)
+    y_pred = svm.predict(X_test)
+    print(y_pred)
+
+
+
+
+
+    # Prediction Probabilities:
+    # random_forest_probs = random_forest.predict_proba(X_test)[:,1]
+    # naive_bayes_probs = naive_bayes_classifier.predict_proba(X_test)[:,1]
+    # decision_tree_probs = decision_tree.predict_proba(X_test)[:,1]
+    # gradient_boosting_probs = gradient_boosting.predict_proba(X_test)[:,1]
+    # gradient_boosting_estimators_40_probs = gradient_boosting_estimators_40.predict_proba(X_test)[:,1]
+    # knn_probs = knn.predict_proba(X_test)[:,1]
+    # logistic_regression_probs = logistic_regression.predict_proba(X_test)[:,1]
+    # svm_probs = svm.predict_proba(X_test)[:,1]
+    
+    
+    # fpr_random_forest, tpr_random_forest, threshold_random_forest = roc_curve(y_test, random_forest_probs)
+    # fpr_naive_bayes, tpr_naive_bayes, threshold_naive_bayes = roc_curve(y_test, naive_bayes_probs)
+    # print('roc_auc_score for random forest: ', roc_auc_score(y_test, random_forest_probs))
+    # print('roc_auc_score for naive bayes: ', roc_auc_score(y_test, naive_bayes_probs))
+    
+    # plt.subplots(1, figsize=(10,10))
+    # plt.title('Receiver Operating Characteristic - random forest')
+    # plt.plot(fpr_random_forest, tpr_random_forest)
+    # plt.plot([0, 1], ls="--")
+    # plt.plot([0, 0], [1, 0] , c=".7"), plt.plot([1, 1] , c=".7")
+    # plt.ylabel('True Positive Rate')
+    # plt.xlabel('False Positive Rate')
+    # plt.show()
+
+    # plt.subplots(1, figsize=(10,10))
+    # plt.title('Receiver Operating Characteristic -naive bayes')
+    # plt.plot(fpr_naive_bayes, tpr_naive_bayes)
+    # plt.plot([0, 1], ls="--")
+    # plt.plot([0, 0], [1, 0] , c=".7"), plt.plot([1, 1] , c=".7")
+    # plt.ylabel('True Positive Rate')
+    # plt.xlabel('False Positive Rate')
+    # plt.show()
+
+
+
