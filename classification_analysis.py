@@ -347,6 +347,71 @@ def convert_categorical_to_binary(data):
     return data
 
 
+def decisionTree(X_train,y_train):
+    print("Decision Tree with max depth=5")
+    decision_tree = tree.DecisionTreeClassifier(max_depth=5)
+    decision_tree.fit(X_train,y_train)
+    score = decision_tree.score(X_test,y_test)
+    y_pred = decision_tree.predict(X_test)
+    return score, y_pred
+
+def randomForest(X_train,y_train):
+    print("random_forest with n_estimators=5")
+    random_forest = RandomForestClassifier(n_estimators=100)
+    random_forest.fit(X_train,y_train)
+    score = random_forest.score(X_test,y_test)
+    y_pred = random_forest.predict(X_test)
+    return score, y_pred
+
+def GradientBoosting(X_train,y_train):
+    print("Gradient Boosting Classifier")
+    gradient_boosting = GradientBoostingClassifier()
+    gradient_boosting.fit(X_train,y_train)
+    score = gradient_boosting.score(X_test,y_test)
+    y_pred = gradient_boosting.predict(X_test)
+    return score, y_pred
+
+def GradientBoostingWithEstimator(X_train, y_train, n_estimator):
+    #   Gradient Boosting Classifier with  n_esitmators
+    gradient_boosting = GradientBoostingClassifier(n_estimators=n_estimator)
+    gradient_boosting.fit(X_train,y_train)
+    score = gradient_boosting.score(X_test,y_test)
+    y_pred = gradient_boosting.predict(X_test)
+    return score, y_pred
+
+def NaiveBayes(X_train, y_train):
+    print("Naive Bayes Classifier")
+    naive_bayes_classifier = GaussianNB()
+    naive_bayes_classifier.fit(X_train,y_train)
+    score = naive_bayes_classifier.score(X_test,y_test)
+    y_pred = naive_bayes_classifier.predict(X_test)
+    return score, y_pred
+
+def logisticRegression(X_train, y_train):
+    print("Logistic Regression Classifier")
+    logistic_regression = LogisticRegression()
+    logistic_regression.fit(X_train,y_train)
+    score = logistic_regression.score(X_test,y_test)
+    y_pred = logistic_regression.predict(X_test)
+    return score, y_pred
+
+def knn(X_train, y_train):
+    print("K-Nearest Neighbor Classifier")
+    knn = KNeighborsClassifier(n_neighbors=3)
+    knn.fit(X_train,y_train)
+    score = knn.score(X_test,y_test)
+    y_pred = knn.predict(X_test)
+    return score, y_pred
+
+def svm(X_train, y_train):
+    print("SVM Classifier")
+    svm = SVC(probability=True)
+    svm.fit(X_train,y_train)
+    score = svm.score(X_test,y_test)
+    y_pred = svm.predict(X_test)
+    return score, y_pred
+
+
 if __name__ == "__main__":
 
     # dataset'i csv dosyasından okuyor.
@@ -433,87 +498,8 @@ if __name__ == "__main__":
     X = np.delete(X,[30],axis=1)
     X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3,random_state=0)
     
-    #   decision tree    
-    print("Decision Tree with max depth=5")
-    decision_tree = tree.DecisionTreeClassifier(max_depth=5)
-    decision_tree.fit(X_train,y_train)
-    score = decision_tree.score(X_test,y_test)
-    print(score)
-    y_pred = decision_tree.predict(X_test)
-    print(y_pred)
 
-
-    #   Random Forest Classifier
-    print("random_forest with n_estimators=5")
-    random_forest = RandomForestClassifier(n_estimators=100)
-    random_forest.fit(X_train,y_train)
-    score = random_forest.score(X_test,y_test)
-    print(score)
-    y_pred = random_forest.predict(X_test)
-    print(y_pred)
-
-
-    #   Gradient Boosting Classifier
-    print("Gradient Boosting Classifier")
-    gradient_boosting = GradientBoostingClassifier()
-    gradient_boosting.fit(X_train,y_train)
-    score = gradient_boosting.score(X_test,y_test)
-    print(score)
-    y_pred = gradient_boosting.predict(X_test)
-    print(y_pred)
-
-
-    #   Gradient Boosting Classifier with  n_esitmators =40
-    print("Gradient Boosting Classifier n_estimator=40")
-    gradient_boosting_estimators_40 = GradientBoostingClassifier(n_estimators=40)
-    gradient_boosting_estimators_40.fit(X_train,y_train)
-    score = gradient_boosting_estimators_40.score(X_test,y_test)
-    print(score)
-    y_pred = gradient_boosting_estimators_40.predict(X_test)
-    print(y_pred)
-
-
-    #  Naive Bayes Classifier
-    print("Naive Bayes Classifier")
-    naive_bayes_classifier = GaussianNB()
-    naive_bayes_classifier.fit(X_train,y_train)
-    score = naive_bayes_classifier.score(X_test,y_test)
-    print(score)
-    y_pred = naive_bayes_classifier.predict(X_test)
-    print(y_pred)
-
-
-    #  K-Nearest Neighbor Classifier
-    print("K-Nearest Neighbor Classifier")
-    knn = KNeighborsClassifier(n_neighbors=3)
-    knn.fit(X_train,y_train)
-    score = knn.score(X_test,y_test)
-    print(score)
-    y_pred = knn.predict(X_test)
-    print(y_pred)
-
-    # Logistic Regression Classifier
-    print("Logistic Regression Classifier")
-    logistic_regression = LogisticRegression()
-    logistic_regression.fit(X_train,y_train)
-    score = logistic_regression.score(X_test,y_test)
-    print(score)
-    y_pred = logistic_regression.predict(X_test)
-    print(y_pred)
-
-    #   SVM Classifier
-    print("SVM Classifier")
-    svm = SVC(probability=True)
-    svm.fit(X_train,y_train)
-    score = svm.score(X_test,y_test)
-    print(score)
-    y_pred = svm.predict(X_test)
-    print(y_pred)
-
-
-
-
-
+    
     # Prediction Probabilities:
     # random_forest_probs = random_forest.predict_proba(X_test)[:,1]
     # naive_bayes_probs = naive_bayes_classifier.predict_proba(X_test)[:,1]
