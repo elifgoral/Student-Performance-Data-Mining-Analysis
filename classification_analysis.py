@@ -20,6 +20,9 @@ import seaborn as sns
 from prettytable import PrettyTable
 from sklearn.metrics import plot_roc_curve
 from sklearn.metrics import confusion_matrix
+from sklearn.metrics import precision_score
+from sklearn.metrics import recall_score
+from sklearn.metrics import f1_score
 
 warnings.filterwarnings("ignore")
 
@@ -379,6 +382,11 @@ def decisionTree(X_train,y_train,X_test,y_test):
     plt.title('Confusion Matrix - decisionTree', fontsize=18)
     plt.show()
 
+    print()
+    print("Classification Report of decisionTree")
+    print(classification_report(y_test, y_pred, digits=3))
+    print()
+
     return score,y_pred, y_pred_prob
 
 def randomForest(X_train,y_train,X_test,y_test):
@@ -399,6 +407,11 @@ def randomForest(X_train,y_train,X_test,y_test):
     plt.ylabel('Actuals', fontsize=18)
     plt.title('Confusion Matrix - randomForest', fontsize=18)
     plt.show()
+
+    print()
+    print("Classification Report of randomForest")
+    print(classification_report(y_test, y_pred, digits=3))
+    print()
 
     return score,y_pred, y_pred_prob
 
@@ -421,6 +434,11 @@ def GradientBoosting(X_train,y_train,X_test,y_test):
     plt.title('Confusion Matrix - GradientBoosting', fontsize=18)
     plt.show()
 
+    print()
+    print("Classification Report of GradientBoosting")
+    print(classification_report(y_test, y_pred, digits=3))
+    print()
+
     return score,y_pred, y_pred_prob
 
 def GradientBoostingWithEstimator(X_train, y_train,X_test,y_test, n_estimator):
@@ -441,6 +459,12 @@ def GradientBoostingWithEstimator(X_train, y_train,X_test,y_test, n_estimator):
     plt.ylabel('Actuals', fontsize=18)
     plt.title('Confusion Matrix - GradientBoostingWithEstimator', fontsize=18)
     plt.show()
+    
+    print()
+    print("Classification Report of GradientBoosting with ",n_estimator, " estimator")
+    print(classification_report(y_test, y_pred, digits=3))
+    print()
+
     return score,y_pred, y_pred_prob
 
 def NaiveBayes(X_train, y_train,X_test,y_test):
@@ -461,6 +485,11 @@ def NaiveBayes(X_train, y_train,X_test,y_test):
     plt.ylabel('Actuals', fontsize=18)
     plt.title('Confusion Matrix - NaiveBayes', fontsize=18)
     plt.show()
+    
+    print()
+    print("Classification Report of NaiveBayes")
+    print(classification_report(y_test, y_pred, digits=3))
+    print()
 
     return score,y_pred, y_pred_prob
 
@@ -483,6 +512,10 @@ def logisticRegression(X_train, y_train,X_test,y_test):
     plt.title('Confusion Matrix - Logistic Regression', fontsize=18)
     plt.show()
 
+    print()
+    print("Classification Report of Logistic Regression")
+    print(classification_report(y_test, y_pred, digits=3))
+    print()
     return score,y_pred, y_pred_prob
 
 def knn(X_train, y_train,X_test,y_test):
@@ -503,7 +536,10 @@ def knn(X_train, y_train,X_test,y_test):
     plt.ylabel('Actuals', fontsize=18)
     plt.title('Confusion Matrix - KNN', fontsize=18)
     plt.show()
-
+    print()
+    print("Classification Report of KNN")
+    print(classification_report(y_test, y_pred, digits=3))
+    print()
     return score,y_pred, y_pred_prob
 
 def svm(X_train, y_train,X_test,y_test):
@@ -520,11 +556,13 @@ def svm(X_train, y_train,X_test,y_test):
         for j in range(conf_matrix.shape[1]):
             ax.text(x=j, y=i,s=conf_matrix[i, j], va='center', ha='center', size='xx-large')
     
-    plt.xlabel('Predictions', fontsize=18)
-    plt.ylabel('Actuals', fontsize=18)
-    plt.title('Confusion Matrix - SVM', fontsize=18)
-    plt.show()
 
+    # df = pd.DataFrame({'Real Values':y_test, 'Predicted Values':y_pred})
+    # print(df)
+    print()
+    print("Classification Report of SVM")
+    print(classification_report(y_test, y_pred, digits=3))
+    print()
     return score,y_pred, y_pred_prob
 
 
@@ -532,9 +570,6 @@ if __name__ == "__main__":
 
     # dataset'i csv dosyasından okuyor.
     data = pd.read_csv("dataset/student performance/student/student-mat.csv",sep=";")
-
-    # data'nın ilk 5 satırını getiriyor.
-    print(data.head())
 
     #   ilk önce grade'lar 0-20 arasında olduğu için hepsini 5 ile çarpıyorum.
     data["G1"] = data["G1"].apply(lambda x: x * 5)
@@ -566,8 +601,6 @@ if __name__ == "__main__":
     data_1 = data.copy()
     data_1["sex"] = data_1["sex"].map(lambda x: 0 if x=="F" else 1)
     df = data_1.copy()
-
-    print(df.head())
 
     #(395,33) = (row,column)
     print(df.shape)
@@ -628,10 +661,6 @@ if __name__ == "__main__":
     # absences_gender_relation(data)
 
     data_converted = convert_categorical_to_binary(data)
-    # data_converted = data_converted.drop(["G2","G3"],axis=1)
-    # print(f'Categorical Columns:  {get_categorical_columns(data_converted)}')
-    print(data_converted.head(5))
-    
     X = data_converted.values
     y = data_converted["final_grade"].values
     
@@ -658,7 +687,6 @@ if __name__ == "__main__":
     logisticRegression_auc_score = roc_auc_score(y_test, logisticRegressionPredProb,multi_class="ovo")
     
     x = PrettyTable()
-
     x.field_names = ["Algorithm", "Accuracy Score","AUC Score"]
     x.add_row(["decisionTree", decisionTreeScore,decision_tree_auc_score])
     x.add_row(["randomForest", randomForestScore,random_forest_auc_score])
