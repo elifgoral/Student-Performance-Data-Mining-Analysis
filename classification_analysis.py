@@ -366,6 +366,19 @@ def decisionTree(X_train,y_train,X_test,y_test):
     score = decision_tree.score(X_test,y_test)
     y_pred = decision_tree.predict(X_test)
     y_pred_prob = decision_tree.predict_proba(X_test)
+    
+    conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
+    fig, ax = plt.subplots(figsize=(5, 5))
+    ax.matshow(conf_matrix, cmap=plt.cm.Oranges, alpha=0.3)
+    for i in range(conf_matrix.shape[0]):
+        for j in range(conf_matrix.shape[1]):
+            ax.text(x=j, y=i,s=conf_matrix[i, j], va='center', ha='center', size='xx-large')
+    
+    plt.xlabel('Predictions', fontsize=18)
+    plt.ylabel('Actuals', fontsize=18)
+    plt.title('Confusion Matrix - decisionTree', fontsize=18)
+    plt.show()
+
     return score,y_pred, y_pred_prob
 
 def randomForest(X_train,y_train,X_test,y_test):
@@ -374,6 +387,19 @@ def randomForest(X_train,y_train,X_test,y_test):
     score = random_forest.score(X_test,y_test)
     y_pred = random_forest.predict(X_test)
     y_pred_prob = random_forest.predict_proba(X_test)
+    
+    conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
+    fig, ax = plt.subplots(figsize=(5, 5))
+    ax.matshow(conf_matrix, cmap=plt.cm.Oranges, alpha=0.3)
+    for i in range(conf_matrix.shape[0]):
+        for j in range(conf_matrix.shape[1]):
+            ax.text(x=j, y=i,s=conf_matrix[i, j], va='center', ha='center', size='xx-large')
+    
+    plt.xlabel('Predictions', fontsize=18)
+    plt.ylabel('Actuals', fontsize=18)
+    plt.title('Confusion Matrix - randomForest', fontsize=18)
+    plt.show()
+
     return score,y_pred, y_pred_prob
 
 def GradientBoosting(X_train,y_train,X_test,y_test):
@@ -382,6 +408,19 @@ def GradientBoosting(X_train,y_train,X_test,y_test):
     score = gradient_boosting.score(X_test,y_test)
     y_pred = gradient_boosting.predict(X_test)
     y_pred_prob = gradient_boosting.predict_proba(X_test)
+
+    conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
+    fig, ax = plt.subplots(figsize=(5, 5))
+    ax.matshow(conf_matrix, cmap=plt.cm.Oranges, alpha=0.3)
+    for i in range(conf_matrix.shape[0]):
+        for j in range(conf_matrix.shape[1]):
+            ax.text(x=j, y=i,s=conf_matrix[i, j], va='center', ha='center', size='xx-large')
+    
+    plt.xlabel('Predictions', fontsize=18)
+    plt.ylabel('Actuals', fontsize=18)
+    plt.title('Confusion Matrix - GradientBoosting', fontsize=18)
+    plt.show()
+
     return score,y_pred, y_pred_prob
 
 def GradientBoostingWithEstimator(X_train, y_train,X_test,y_test, n_estimator):
@@ -390,6 +429,18 @@ def GradientBoostingWithEstimator(X_train, y_train,X_test,y_test, n_estimator):
     score = gradient_boosting.score(X_test,y_test)
     y_pred = gradient_boosting.predict(X_test)
     y_pred_prob = gradient_boosting.predict_proba(X_test)
+  
+    conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
+    fig, ax = plt.subplots(figsize=(5, 5))
+    ax.matshow(conf_matrix, cmap=plt.cm.Oranges, alpha=0.3)
+    for i in range(conf_matrix.shape[0]):
+        for j in range(conf_matrix.shape[1]):
+            ax.text(x=j, y=i,s=conf_matrix[i, j], va='center', ha='center', size='xx-large')
+    
+    plt.xlabel('Predictions', fontsize=18)
+    plt.ylabel('Actuals', fontsize=18)
+    plt.title('Confusion Matrix - GradientBoostingWithEstimator', fontsize=18)
+    plt.show()
     return score,y_pred, y_pred_prob
 
 def NaiveBayes(X_train, y_train,X_test,y_test):
@@ -398,6 +449,19 @@ def NaiveBayes(X_train, y_train,X_test,y_test):
     score = naive_bayes_classifier.score(X_test,y_test)
     y_pred = naive_bayes_classifier.predict(X_test)
     y_pred_prob = naive_bayes_classifier.predict_proba(X_test)
+    
+    conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
+    fig, ax = plt.subplots(figsize=(5, 5))
+    ax.matshow(conf_matrix, cmap=plt.cm.Oranges, alpha=0.3)
+    for i in range(conf_matrix.shape[0]):
+        for j in range(conf_matrix.shape[1]):
+            ax.text(x=j, y=i,s=conf_matrix[i, j], va='center', ha='center', size='xx-large')
+    
+    plt.xlabel('Predictions', fontsize=18)
+    plt.ylabel('Actuals', fontsize=18)
+    plt.title('Confusion Matrix - NaiveBayes', fontsize=18)
+    plt.show()
+
     return score,y_pred, y_pred_prob
 
 def logisticRegression(X_train, y_train,X_test,y_test):
@@ -406,6 +470,19 @@ def logisticRegression(X_train, y_train,X_test,y_test):
     score = logistic_regression.score(X_test,y_test)
     y_pred = logistic_regression.predict(X_test)
     y_pred_prob = logistic_regression.predict_proba(X_test)
+    
+    conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
+    fig, ax = plt.subplots(figsize=(5, 5))
+    ax.matshow(conf_matrix, cmap=plt.cm.Oranges, alpha=0.3)
+    for i in range(conf_matrix.shape[0]):
+        for j in range(conf_matrix.shape[1]):
+            ax.text(x=j, y=i,s=conf_matrix[i, j], va='center', ha='center', size='xx-large')
+    
+    plt.xlabel('Predictions', fontsize=18)
+    plt.ylabel('Actuals', fontsize=18)
+    plt.title('Confusion Matrix - Logistic Regression', fontsize=18)
+    plt.show()
+
     return score,y_pred, y_pred_prob
 
 def knn(X_train, y_train,X_test,y_test):
@@ -414,6 +491,19 @@ def knn(X_train, y_train,X_test,y_test):
     score = knn.score(X_test,y_test)
     y_pred = knn.predict(X_test)
     y_pred_prob = knn.predict_proba(X_test)
+    
+    conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
+    fig, ax = plt.subplots(figsize=(5, 5))
+    ax.matshow(conf_matrix, cmap=plt.cm.Oranges, alpha=0.3)
+    for i in range(conf_matrix.shape[0]):
+        for j in range(conf_matrix.shape[1]):
+            ax.text(x=j, y=i,s=conf_matrix[i, j], va='center', ha='center', size='xx-large')
+    
+    plt.xlabel('Predictions', fontsize=18)
+    plt.ylabel('Actuals', fontsize=18)
+    plt.title('Confusion Matrix - KNN', fontsize=18)
+    plt.show()
+
     return score,y_pred, y_pred_prob
 
 def svm(X_train, y_train,X_test,y_test):
@@ -422,6 +512,19 @@ def svm(X_train, y_train,X_test,y_test):
     score = svm.score(X_test,y_test)
     y_pred = svm.predict(X_test)
     y_pred_prob = svm.predict_proba(X_test)
+    
+    conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
+    fig, ax = plt.subplots(figsize=(5, 5))
+    ax.matshow(conf_matrix, cmap=plt.cm.Oranges, alpha=0.3)
+    for i in range(conf_matrix.shape[0]):
+        for j in range(conf_matrix.shape[1]):
+            ax.text(x=j, y=i,s=conf_matrix[i, j], va='center', ha='center', size='xx-large')
+    
+    plt.xlabel('Predictions', fontsize=18)
+    plt.ylabel('Actuals', fontsize=18)
+    plt.title('Confusion Matrix - SVM', fontsize=18)
+    plt.show()
+
     return score,y_pred, y_pred_prob
 
 
@@ -568,42 +671,6 @@ if __name__ == "__main__":
 
     print(x)
 
-
-
-
-    # Prediction Probabilities:
-    # random_forest_probs = random_forest.predict_proba(X_test)[:,1]
-    # naive_bayes_probs = naive_bayes_classifier.predict_proba(X_test)[:,1]
-    # decision_tree_probs = decision_tree.predict_proba(X_test)[:,1]
-    # gradient_boosting_probs = gradient_boosting.predict_proba(X_test)[:,1]
-    # gradient_boosting_estimators_40_probs = gradient_boosting_estimators_40.predict_proba(X_test)[:,1]
-    # knn_probs = knn.predict_proba(X_test)[:,1]
-    # logistic_regression_probs = logistic_regression.predict_proba(X_test)[:,1]
-    # svm_probs = svm.predict_proba(X_test)[:,1]
-    
-    
-    # fpr_random_forest, tpr_random_forest, threshold_random_forest = roc_curve(y_test, random_forest_probs)
-    # fpr_naive_bayes, tpr_naive_bayes, threshold_naive_bayes = roc_curve(y_test, naive_bayes_probs)
-    # print('roc_auc_score for random forest: ', roc_auc_score(y_test, random_forest_probs))
-    # print('roc_auc_score for naive bayes: ', roc_auc_score(y_test, naive_bayes_probs))
-    
-    # plt.subplots(1, figsize=(10,10))
-    # plt.title('Receiver Operating Characteristic - random forest')
-    # plt.plot(fpr_random_forest, tpr_random_forest)
-    # plt.plot([0, 1], ls="--")
-    # plt.plot([0, 0], [1, 0] , c=".7"), plt.plot([1, 1] , c=".7")
-    # plt.ylabel('True Positive Rate')
-    # plt.xlabel('False Positive Rate')
-    # plt.show()
-
-    # plt.subplots(1, figsize=(10,10))
-    # plt.title('Receiver Operating Characteristic -naive bayes')
-    # plt.plot(fpr_naive_bayes, tpr_naive_bayes)
-    # plt.plot([0, 1], ls="--")
-    # plt.plot([0, 0], [1, 0] , c=".7"), plt.plot([1, 1] , c=".7")
-    # plt.ylabel('True Positive Rate')
-    # plt.xlabel('False Positive Rate')
-    # plt.show()
 
 
 
