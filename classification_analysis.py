@@ -10,15 +10,16 @@ from sklearn.model_selection import cross_val_predict, train_test_split, cross_v
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import tree
 from sklearn.naive_bayes import GaussianNB
-from sklearn.metrics import roc_auc_score,roc_curve
+from sklearn.metrics import roc_auc_score,roc_curve,accuracy_score
 import plotly 
 import plotly.express as px
 import warnings
 from sklearn.metrics import classification_report
-from sklearn.metrics import roc_curve, auc
 from sklearn.multiclass import OneVsRestClassifier
 import seaborn as sns
 from prettytable import PrettyTable
+from sklearn.metrics import plot_roc_curve
+from sklearn.metrics import confusion_matrix
 
 warnings.filterwarnings("ignore")
 
@@ -359,61 +360,69 @@ def convert_categorical_to_binary(data):
 
     return data
 
-def decisionTree(X_train,y_train):
+def decisionTree(X_train,y_train,X_test,y_test):
     decision_tree = tree.DecisionTreeClassifier(max_depth=5)
     decision_tree.fit(X_train,y_train)
     score = decision_tree.score(X_test,y_test)
     y_pred = decision_tree.predict(X_test)
-    return score, y_pred
+    y_pred_prob = decision_tree.predict_proba(X_test)
+    return score,y_pred, y_pred_prob
 
-def randomForest(X_train,y_train):
+def randomForest(X_train,y_train,X_test,y_test):
     random_forest = RandomForestClassifier(n_estimators=100)
     random_forest.fit(X_train,y_train)
     score = random_forest.score(X_test,y_test)
     y_pred = random_forest.predict(X_test)
-    return score, y_pred
+    y_pred_prob = random_forest.predict_proba(X_test)
+    return score,y_pred, y_pred_prob
 
-def GradientBoosting(X_train,y_train):
+def GradientBoosting(X_train,y_train,X_test,y_test):
     gradient_boosting = GradientBoostingClassifier()
     gradient_boosting.fit(X_train,y_train)
     score = gradient_boosting.score(X_test,y_test)
     y_pred = gradient_boosting.predict(X_test)
-    return score, y_pred
+    y_pred_prob = gradient_boosting.predict_proba(X_test)
+    return score,y_pred, y_pred_prob
 
-def GradientBoostingWithEstimator(X_train, y_train, n_estimator):
+def GradientBoostingWithEstimator(X_train, y_train,X_test,y_test, n_estimator):
     gradient_boosting = GradientBoostingClassifier(n_estimators=n_estimator)
     gradient_boosting.fit(X_train,y_train)
     score = gradient_boosting.score(X_test,y_test)
     y_pred = gradient_boosting.predict(X_test)
-    return score, y_pred
+    y_pred_prob = gradient_boosting.predict_proba(X_test)
+    return score,y_pred, y_pred_prob
 
-def NaiveBayes(X_train, y_train):
+def NaiveBayes(X_train, y_train,X_test,y_test):
     naive_bayes_classifier = GaussianNB()
     naive_bayes_classifier.fit(X_train,y_train)
     score = naive_bayes_classifier.score(X_test,y_test)
     y_pred = naive_bayes_classifier.predict(X_test)
-    return score, y_pred
+    y_pred_prob = naive_bayes_classifier.predict_proba(X_test)
+    return score,y_pred, y_pred_prob
 
-def logisticRegression(X_train, y_train):
+def logisticRegression(X_train, y_train,X_test,y_test):
     logistic_regression = LogisticRegression()
     logistic_regression.fit(X_train,y_train)
     score = logistic_regression.score(X_test,y_test)
     y_pred = logistic_regression.predict(X_test)
-    return score, y_pred
+    y_pred_prob = logistic_regression.predict_proba(X_test)
+    return score,y_pred, y_pred_prob
 
-def knn(X_train, y_train):
+def knn(X_train, y_train,X_test,y_test):
     knn = KNeighborsClassifier(n_neighbors=3)
     knn.fit(X_train,y_train)
     score = knn.score(X_test,y_test)
     y_pred = knn.predict(X_test)
-    return score, y_pred
+    y_pred_prob = knn.predict_proba(X_test)
+    return score,y_pred, y_pred_prob
 
-def svm(X_train, y_train):
+def svm(X_train, y_train,X_test,y_test):
     svm = SVC(probability=True)
     svm.fit(X_train,y_train)
     score = svm.score(X_test,y_test)
     y_pred = svm.predict(X_test)
-    return score, y_pred
+    y_pred_prob = svm.predict_proba(X_test)
+    return score,y_pred, y_pred_prob
 
 
 if __name__ == "__main__":
@@ -527,41 +536,35 @@ if __name__ == "__main__":
     X = np.delete(X,[33],axis=1)
     X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3,random_state=0)
 
-    decisionTreeScore,decisionTreePred = decisionTree(X_train,y_train)
-    # print(f'decision tree score: {decisionTreeScore}')
+    decisionTreeScore,decisionTreePred, decisionTreePredProb= decisionTree(X_train,y_train,X_test,y_test)    
+    randomForestScore,randomForestPred,randomForestPredProb = randomForest(X_train,y_train,X_test,y_test)
+    naiveBayesScore,naiveBayesPred,naiveBayesPredProb = NaiveBayes(X_train,y_train,X_test,y_test)    
+    gradientBoostingScore,gradientBoostingPred,gradientBoostingPredProb = GradientBoosting(X_train,y_train,X_test,y_test)
+    gradientBoostingEstimatorScore,gradientBoostingEstimatorPred,gradientBoostingEstimatorPredProb = GradientBoostingWithEstimator(X_train,y_train,X_test,y_test,3)
+    knnScore,knnPred,knnPredProb = knn(X_train,y_train,X_test,y_test)
+    svmScore,svmPred,svmPredProb = svm(X_train,y_train,X_test,y_test)
+    logisticRegressionScore,logisticRegressionPred,logisticRegressionPredProb = logisticRegression(X_train,y_train,X_test,y_test)
     
-    randomForestScore,randomForestPred = randomForest(X_train,y_train)
-    # print(f'randomForest score: {randomForestScore}')
-
-    naiveBayesScore,naiveBayesPred = NaiveBayes(X_train,y_train)    
-    # print(f'NaiveBayes score: {naiveBayesScore}')
-
-    gradientBoostingScore,gradientBoostingPred = GradientBoosting(X_train,y_train)
-    # print(f'GradientBoosting score: {gradientBoostingScore}')
-
-    gradientBoostingEstimatorScore,gradientBoostingEstimatorPred = GradientBoostingWithEstimator(X_train,y_train,3)
-    # print(f'GradientBoostingWithEstimator score: {gradientBoostingEstimatorScore}')
-
-    knnScore,knnPred = knn(X_train,y_train)
-    # print(f'knn score: {knnScore}')
-
-    svmScore,svmPred = svm(X_train,y_train)
-    # print(f'svm score: {svmScore}')
-
-    logisticRegressionScore,logisticRegressionPred = logisticRegression(X_train,y_train)
-    # print(f'logisticRegression score: {logisticRegressionScore}')
+    decision_tree_auc_score = roc_auc_score(y_test, decisionTreePredProb,multi_class="ovo")
+    random_forest_auc_score = roc_auc_score(y_test, randomForestPredProb,multi_class="ovo")
+    naiveBayes_auc_score = roc_auc_score(y_test, naiveBayesPredProb,multi_class="ovo")
+    gradientBoosting_auc_score = roc_auc_score(y_test, gradientBoostingPredProb,multi_class="ovo")
+    gradientBoostingEstimator_auc_score = roc_auc_score(y_test, gradientBoostingEstimatorPredProb,multi_class="ovo")
+    knn_auc_score = roc_auc_score(y_test, knnPredProb,multi_class="ovo")
+    svm_auc_score = roc_auc_score(y_test, svmPredProb,multi_class="ovo")
+    logisticRegression_auc_score = roc_auc_score(y_test, logisticRegressionPredProb,multi_class="ovo")
     
     x = PrettyTable()
 
-    x.field_names = ["Algorithm", "Score"]
-    x.add_row(["decisionTree", decisionTreeScore])
-    x.add_row(["randomForest", randomForestScore])
-    x.add_row(["NaiveBayes", naiveBayesScore])
-    x.add_row(["GradientBoosting", gradientBoostingScore])
-    x.add_row(["GradientBoostingWithEstimator", gradientBoostingEstimatorScore])
-    x.add_row(["KNN", knnScore])
-    x.add_row(["SVM", svmScore])
-    x.add_row(["logisticRegression", logisticRegressionScore])
+    x.field_names = ["Algorithm", "Accuracy Score","AUC Score"]
+    x.add_row(["decisionTree", decisionTreeScore,decision_tree_auc_score])
+    x.add_row(["randomForest", randomForestScore,random_forest_auc_score])
+    x.add_row(["NaiveBayes", naiveBayesScore,naiveBayes_auc_score])
+    x.add_row(["GradientBoosting", gradientBoostingScore,gradientBoosting_auc_score])
+    x.add_row(["GradientBoostingWithEstimator", gradientBoostingEstimatorScore,gradientBoostingEstimator_auc_score])
+    x.add_row(["KNN", knnScore,knn_auc_score])
+    x.add_row(["SVM", svmScore,svm_auc_score])
+    x.add_row(["logisticRegression", logisticRegressionScore,logisticRegression_auc_score])
 
     print(x)
 
