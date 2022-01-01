@@ -17,6 +17,8 @@ import warnings
 from sklearn.metrics import classification_report
 from sklearn.metrics import roc_curve, auc
 from sklearn.multiclass import OneVsRestClassifier
+import seaborn as sns
+from prettytable import PrettyTable
 
 warnings.filterwarnings("ignore")
 
@@ -344,10 +346,20 @@ def convert_categorical_to_binary(data):
     data["guardian"] = np.where(data["guardian"] =="other", 2, data["guardian"])
     data["guardian"] = pd.to_numeric(data["guardian"])
 
+
+    data["final_grade"] = np.where(data["final_grade"] =="AA", 0, data["final_grade"])
+    data["final_grade"] = np.where(data["final_grade"] =="BA", 1, data["final_grade"])
+    data["final_grade"] = np.where(data["final_grade"] =="BB", 2, data["final_grade"])
+    data["final_grade"] = np.where(data["final_grade"] =="CB", 3, data["final_grade"])
+    data["final_grade"] = np.where(data["final_grade"] =="CC", 4, data["final_grade"])
+    data["final_grade"] = np.where(data["final_grade"] =="DC", 5, data["final_grade"])
+    data["final_grade"] = np.where(data["final_grade"] =="DD", 6, data["final_grade"])
+    data["final_grade"] = np.where(data["final_grade"] =="FF", 7, data["final_grade"])
+    data["final_grade"] = pd.to_numeric(data["final_grade"])
+
     return data
 
 def decisionTree(X_train,y_train):
-    print("Decision Tree with max depth=5")
     decision_tree = tree.DecisionTreeClassifier(max_depth=5)
     decision_tree.fit(X_train,y_train)
     score = decision_tree.score(X_test,y_test)
@@ -355,7 +367,6 @@ def decisionTree(X_train,y_train):
     return score, y_pred
 
 def randomForest(X_train,y_train):
-    print("random_forest with n_estimators=5")
     random_forest = RandomForestClassifier(n_estimators=100)
     random_forest.fit(X_train,y_train)
     score = random_forest.score(X_test,y_test)
@@ -363,7 +374,6 @@ def randomForest(X_train,y_train):
     return score, y_pred
 
 def GradientBoosting(X_train,y_train):
-    print("Gradient Boosting Classifier")
     gradient_boosting = GradientBoostingClassifier()
     gradient_boosting.fit(X_train,y_train)
     score = gradient_boosting.score(X_test,y_test)
@@ -371,7 +381,6 @@ def GradientBoosting(X_train,y_train):
     return score, y_pred
 
 def GradientBoostingWithEstimator(X_train, y_train, n_estimator):
-    #   Gradient Boosting Classifier with  n_esitmators
     gradient_boosting = GradientBoostingClassifier(n_estimators=n_estimator)
     gradient_boosting.fit(X_train,y_train)
     score = gradient_boosting.score(X_test,y_test)
@@ -379,7 +388,6 @@ def GradientBoostingWithEstimator(X_train, y_train, n_estimator):
     return score, y_pred
 
 def NaiveBayes(X_train, y_train):
-    print("Naive Bayes Classifier")
     naive_bayes_classifier = GaussianNB()
     naive_bayes_classifier.fit(X_train,y_train)
     score = naive_bayes_classifier.score(X_test,y_test)
@@ -387,7 +395,6 @@ def NaiveBayes(X_train, y_train):
     return score, y_pred
 
 def logisticRegression(X_train, y_train):
-    print("Logistic Regression Classifier")
     logistic_regression = LogisticRegression()
     logistic_regression.fit(X_train,y_train)
     score = logistic_regression.score(X_test,y_test)
@@ -395,7 +402,6 @@ def logisticRegression(X_train, y_train):
     return score, y_pred
 
 def knn(X_train, y_train):
-    print("K-Nearest Neighbor Classifier")
     knn = KNeighborsClassifier(n_neighbors=3)
     knn.fit(X_train,y_train)
     score = knn.score(X_test,y_test)
@@ -403,7 +409,6 @@ def knn(X_train, y_train):
     return score, y_pred
 
 def svm(X_train, y_train):
-    print("SVM Classifier")
     svm = SVC(probability=True)
     svm.fit(X_train,y_train)
     score = svm.score(X_test,y_test)
@@ -433,7 +438,16 @@ if __name__ == "__main__":
     data.loc[((data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) >= 45) & ( (data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) <= 49), 'final_grade'] = 'DC' 
     data.loc[((data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) >= 40) & ( (data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) <= 45), 'final_grade'] = 'DD' 
     data.loc[((data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) >= 0) & ( (data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) <= 40), 'final_grade'] = 'FF' 
-    print(data.head(50))
+    print(data.head(5))
+    # fig = px.histogram(data_frame=data, x="final_grade", color="sex", width=400, height=400)
+    # fig.show()
+    # fig = px.histogram(data_frame=data, x="final_grade", color="schoolsup", width=400, height=400)
+    # fig.show()
+    # fig = px.histogram(data_frame=data, x="final_grade", color="romantic", width=400, height=400)
+    # fig.show()
+    # fig = px.histogram(data_frame=data, x="final_grade", color="address", width=400, height=400)
+    # fig.show()
+
 
     # data'daki sex string olduğu için ve kıyaslanabilir bir şey olsun diye
     # F: 0 , M:1 yapıyoruz
@@ -502,16 +516,56 @@ if __name__ == "__main__":
     # absences_gender_relation(data)
 
     data_converted = convert_categorical_to_binary(data)
-    data_converted = data_converted.drop(["G2","G3"],axis=1)
-    print(f'Categorical Columns:  {get_categorical_columns(data_converted)}')
-    print(data_converted.dtypes)
+    # data_converted = data_converted.drop(["G2","G3"],axis=1)
+    # print(f'Categorical Columns:  {get_categorical_columns(data_converted)}')
+    print(data_converted.head(5))
+    
     X = data_converted.values
-    y = data_converted["G1"].values
+    y = data_converted["final_grade"].values
     
-    # 30. column(yani G1'i siliyorum.)
-    X = np.delete(X,[30],axis=1)
+    # 33. column(yani final_Grade'i siliyorum.)
+    X = np.delete(X,[33],axis=1)
     X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3,random_state=0)
+
+    decisionTreeScore,decisionTreePred = decisionTree(X_train,y_train)
+    # print(f'decision tree score: {decisionTreeScore}')
     
+    randomForestScore,randomForestPred = randomForest(X_train,y_train)
+    # print(f'randomForest score: {randomForestScore}')
+
+    naiveBayesScore,naiveBayesPred = NaiveBayes(X_train,y_train)    
+    # print(f'NaiveBayes score: {naiveBayesScore}')
+
+    gradientBoostingScore,gradientBoostingPred = GradientBoosting(X_train,y_train)
+    # print(f'GradientBoosting score: {gradientBoostingScore}')
+
+    gradientBoostingEstimatorScore,gradientBoostingEstimatorPred = GradientBoostingWithEstimator(X_train,y_train,3)
+    # print(f'GradientBoostingWithEstimator score: {gradientBoostingEstimatorScore}')
+
+    knnScore,knnPred = knn(X_train,y_train)
+    # print(f'knn score: {knnScore}')
+
+    svmScore,svmPred = svm(X_train,y_train)
+    # print(f'svm score: {svmScore}')
+
+    logisticRegressionScore,logisticRegressionPred = logisticRegression(X_train,y_train)
+    # print(f'logisticRegression score: {logisticRegressionScore}')
+    
+    x = PrettyTable()
+
+    x.field_names = ["Algorithm", "Score"]
+    x.add_row(["decisionTree", decisionTreeScore])
+    x.add_row(["randomForest", randomForestScore])
+    x.add_row(["NaiveBayes", naiveBayesScore])
+    x.add_row(["GradientBoosting", gradientBoostingScore])
+    x.add_row(["GradientBoostingWithEstimator", gradientBoostingEstimatorScore])
+    x.add_row(["KNN", knnScore])
+    x.add_row(["SVM", svmScore])
+    x.add_row(["logisticRegression", logisticRegressionScore])
+
+    print(x)
+
+
 
 
     # Prediction Probabilities:
