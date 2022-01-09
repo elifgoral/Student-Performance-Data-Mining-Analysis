@@ -6,31 +6,20 @@ from sklearn.svm import SVC
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import cross_val_predict, train_test_split, cross_val_score
+from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import tree
 from sklearn.naive_bayes import GaussianNB
-from sklearn.metrics import roc_auc_score,roc_curve,accuracy_score
-import plotly 
+from sklearn.metrics import roc_auc_score
 import plotly.express as px
 import warnings
 from sklearn.metrics import classification_report
-from sklearn.multiclass import OneVsRestClassifier
 import seaborn as sns
 from prettytable import PrettyTable
-from sklearn.metrics import plot_roc_curve
 from sklearn.metrics import confusion_matrix
-from sklearn.metrics import precision_score
-from sklearn.metrics import recall_score
-from sklearn.metrics import f1_score
 
 warnings.filterwarnings("ignore")
-
-
-pd.set_option('max_columns',100)
-pd.set_option('max_rows',900)
-pd.set_option('max_colwidth',200)
-
+#.\myenv\Scripts\activate
 
 # sütunların kaçar tane missing cell içerdiğini buluyor.
 def missing (df):
@@ -63,7 +52,7 @@ def romantic_percentage(df):
     y = df['romantic']
     print(f'Percentage of romantic students:  {round(y.value_counts(normalize=True)[1]*100,2)} %  --> ({y.value_counts()[1]} student)')
     print(f'Percentage of not romantic students: {round(y.value_counts(normalize=True)[0]*100,2)}  %  --> ({y.value_counts()[0]} student)\n')
-    fig = px.histogram(data_frame=df, x="romantic", color="sex", width=800, height=800, title = "Romatic students according to gender <br><sup>Sex: 0 -> Male  1 -> Female</sup>")
+    fig = px.histogram(data_frame=df, x="romantic", color="sex", width=400, height=400, title = "Romatic students according to gender <br><sup>Sex: 0 -> Male  1 -> Female</sup>")
     fig.show()
 
 #   derslere ekstra para verip vermeme durumu
@@ -81,7 +70,7 @@ def internet_access_percentage(df):
     y = df['internet']
     print(f'Percentage of students who have access internet access at home:  {round(y.value_counts(normalize=True)[1]*100,2)} %  --> ({y.value_counts()[1]} student)')
     print(f'Percentage of students who have not access internet access at home: {round(y.value_counts(normalize=True)[0]*100,2)}  %  --> ({y.value_counts()[0]} student)\n')
-    fig = px.histogram(data_frame=df, x="internet", color="sex", width=800, height=800,
+    fig = px.histogram(data_frame=df, x="internet", color="sex", width=400, height=400,
         title = "number of students who have access internet access at home according to gender <br><sup>Sex: 0 -> Male  1 -> Female</sup>")
     fig.show()
 
@@ -101,7 +90,7 @@ def nursery_school_history_percentage(df):
     y = df['nursery']
     print(f'Percentage of students who attended nursery school:  {round(y.value_counts(normalize=True)[1]*100,2)} %  --> ({y.value_counts()[1]} student)')
     print(f'Percentage of students who did not attend nursery school: {round(y.value_counts(normalize=True)[0]*100,2)}  %  --> ({y.value_counts()[0]} student)\n')
-    fig = px.histogram(data_frame=df, x="nursery", color="sex", width=600, height=600,
+    fig = px.histogram(data_frame=df, x="nursery", color="sex", width=400, height=400,
         title = "number of students who attended nursery school according to gender <br><sup>Sex: 0 -> Male  1 -> Female</sup>")
     fig.show()
 
@@ -159,17 +148,21 @@ def grade_family_relation(data, family_mem, grade_num, family_mem_job):
         for i in range(len(values)):
             print(f'{grade_num}={keys[i]} \t\t{memberJob}={family_mem_job} num: {values[i]}')
         
-        # Fjob yada Mjob'ı family_mem_job'a eşit olan öğrencilerin G1 dağılım grafiği
-        data = data[data[memberJob] == family_mem_job]
-        fig = px.histogram(data_frame=data, x="G1", color=memberJob, width=400, height=400)
-        fig.show()
+        # # Fjob yada Mjob'ı family_mem_job'a eşit olan öğrencilerin G1 dağılım grafiği
+        # data = data[data[memberJob] == family_mem_job]
+        # fig = px.histogram(data_frame=data, x="G1", color=memberJob, width=400, height=400)
+        # fig.show()
         
-        data = data[data[memberJob] == family_mem_job]
-        fig = px.histogram(data_frame=data, x="G2", color=memberJob, width=400, height=400)
-        fig.show()
+        # data = data[data[memberJob] == family_mem_job]
+        # fig = px.histogram(data_frame=data, x="G2", color=memberJob, width=400, height=400)
+        # fig.show()
         
+        # data = data[data[memberJob] == family_mem_job]
+        # fig = px.histogram(data_frame=data, x="G3", color=memberJob, width=400, height=400)
+        # fig.show()
+
         data = data[data[memberJob] == family_mem_job]
-        fig = px.histogram(data_frame=data, x="G3", color=memberJob, width=400, height=400)
+        fig = px.histogram(data_frame=data, x="final_grade", color=memberJob, width=400, height=400)
         fig.show()
 
     except ValueError as exp:
@@ -204,28 +197,32 @@ def grade_family_education_relation(data,family_mem, grade_num, family_mem_edu):
             print(f'{grade_num}={keys[i]} \t\t{memberEdu}={family_education_dict[family_mem_edu]} num: {values[i]}')
 
         # Fjob yada Medu değeri family_mem_edu'a eşit olan öğrencilerin G_x dağılım grafiği
-        data = data[data[memberEdu] == family_mem_edu]
-        fig = px.histogram(data_frame=data, x="G1", color=memberEdu, width=400, height=400)
-        fig.show()
+        # data = data[data[memberEdu] == family_mem_edu]
+        # fig = px.histogram(data_frame=data, x="G1", color=memberEdu, width=400, height=400)
+        # fig.show()
         
-        data = data[data[memberEdu] == family_mem_edu]
-        fig = px.histogram(data_frame=data, x="G2", color=memberEdu, width=400, height=400)
-        fig.show()
+        # data = data[data[memberEdu] == family_mem_edu]
+        # fig = px.histogram(data_frame=data, x="G2", color=memberEdu, width=400, height=400)
+        # fig.show()
         
+        # data = data[data[memberEdu] == family_mem_edu]
+        # fig = px.histogram(data_frame=data, x="G3", color=memberEdu, width=400, height=400)
+        # fig.show()
+          
         data = data[data[memberEdu] == family_mem_edu]
-        fig = px.histogram(data_frame=data, x="G3", color=memberEdu, width=400, height=400)
+        fig = px.histogram(data_frame=data, x="final_grade", color=memberEdu, width=400, height=400)
         fig.show()
 
     except ValueError as exp:
         print ("Error", exp) 
 
 def family_size_gender_relation(data):
-    probability_LE3_female = round(df[df["famsize"]=="LE3"]["sex"].value_counts(normalize=True)[0], 2)
-    probability_LE3_male = round(df[df["famsize"]=="LE3"]["sex"].value_counts(normalize=True)[1], 2)
-    probability_GT3_female = round(df[df["famsize"]=="GT3"]["sex"].value_counts(normalize=True)[0], 2)
-    probability_GT3_male = round(df[df["famsize"]=="GT3"]["sex"].value_counts(normalize=True)[1], 2)
+    probability_LE3_female = round(data[data["famsize"]=="LE3"]["sex"].value_counts(normalize=True)[0], 2)
+    probability_LE3_male = round(data[data["famsize"]=="LE3"]["sex"].value_counts(normalize=True)[1], 2)
+    probability_GT3_female = round(data[data["famsize"]=="GT3"]["sex"].value_counts(normalize=True)[0], 2)
+    probability_GT3_male = round(data[data["famsize"]=="GT3"]["sex"].value_counts(normalize=True)[1], 2)
     print (f'A student, whose famsize is LE3, has a probability of {probability_LE3_female} of being female and {probability_LE3_male} of being male.')
-    print (f'A student, whose famsize is LE3, has a probability of {probability_GT3_female} of being female and {probability_GT3_male} of being male.')
+    print (f'A student, whose famsize is GT3, has a probability of {probability_GT3_female} of being female and {probability_GT3_male} of being male.')
     fig = px.histogram(data_frame=data, x="famsize", color="sex", width=400, height=400)
     fig.show()
 
@@ -235,7 +232,7 @@ def family_size_school_relation(data):
     probability_GT3_GP = round(data[data["famsize"]=="GT3"]["school"].value_counts(normalize=True)["GP"], 2)
     probability_GT3_MS = round(data[data["famsize"]=="GT3"]["school"].value_counts(normalize=True)["MS"], 2)
     print (f'A student, whose famsize is LE3, has a probability of {probability_LE3_GP} of being GP and {probability_LE3_MS} of being MS.')
-    print (f'A student, whose famsize is LE3, has a probability of {probability_GT3_GP} of being GP and {probability_GT3_MS} of being MS.')
+    print (f'A student, whose famsize is GT3, has a probability of {probability_GT3_GP} of being GP and {probability_GT3_MS} of being MS.')
     fig = px.histogram(data_frame=data, x="famsize", color="school", width=400, height=400)
     fig.show()
 
@@ -536,6 +533,7 @@ def knn(X_train, y_train,X_test,y_test):
     plt.ylabel('Actuals', fontsize=18)
     plt.title('Confusion Matrix - KNN', fontsize=18)
     plt.show()
+
     print()
     print("Classification Report of KNN")
     print(classification_report(y_test, y_pred, digits=3))
@@ -556,9 +554,14 @@ def svm(X_train, y_train,X_test,y_test):
         for j in range(conf_matrix.shape[1]):
             ax.text(x=j, y=i,s=conf_matrix[i, j], va='center', ha='center', size='xx-large')
     
+    plt.xlabel('Predictions', fontsize=18)
+    plt.ylabel('Actuals', fontsize=18)
+    plt.title('Confusion Matrix - SVM', fontsize=18)
+    plt.show()
 
     # df = pd.DataFrame({'Real Values':y_test, 'Predicted Values':y_pred})
     # print(df)
+
     print()
     print("Classification Report of SVM")
     print(classification_report(y_test, y_pred, digits=3))
@@ -585,15 +588,48 @@ if __name__ == "__main__":
     data.loc[((data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) >= 45) & ( (data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) <= 49), 'final_grade'] = 'DC' 
     data.loc[((data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) >= 40) & ( (data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) <= 45), 'final_grade'] = 'DD' 
     data.loc[((data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) >= 0) & ( (data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) <= 40), 'final_grade'] = 'FF' 
-    print(data.head(5))
+
+    
     # fig = px.histogram(data_frame=data, x="final_grade", color="sex", width=400, height=400)
     # fig.show()
+
     # fig = px.histogram(data_frame=data, x="final_grade", color="schoolsup", width=400, height=400)
     # fig.show()
+    
+    # fig = px.histogram(data_frame=data, x="final_grade", color="famsup", width=400, height=400)
+    # fig.show()
+
+    # fig = px.histogram(data_frame=data, x="final_grade", color="paid", width=400, height=400)
+    # fig.show()
+
     # fig = px.histogram(data_frame=data, x="final_grade", color="romantic", width=400, height=400)
     # fig.show()
+    
     # fig = px.histogram(data_frame=data, x="final_grade", color="address", width=400, height=400)
     # fig.show()
+
+    # fig = px.histogram(data_frame=data, x="final_grade", color="nursery", width=400, height=400)
+    # fig.show()
+    
+    # fig = px.histogram(data_frame=data, x="final_grade", color="higher", width=400, height=400)
+    # fig.show()
+
+    # fig = px.histogram(data_frame=data, x="final_grade", color="activities", width=400, height=400)
+    # fig.show()
+
+    # fig = px.histogram(data_frame=data, x="final_grade", color="internet", width=400, height=400)
+    # fig.show()
+
+    # fig = px.histogram(data_frame=data, x="final_grade", color="famsize", width=400, height=400)
+    # fig.show()
+    
+    data_famrel = data[data["sex"] == "male"]
+    fig = px.histogram(data_frame=data_famrel, x="final_grade", color="famrel", width=400, height=400)
+    fig.show()
+    
+    data_famrel = data[data["sex"] == "female"]
+    fig = px.histogram(data_frame=data_famrel, x="final_grade", color="famrel", width=400, height=400)
+    fig.show()
 
 
     # data'daki sex string olduğu için ve kıyaslanabilir bir şey olsun diye
@@ -602,20 +638,18 @@ if __name__ == "__main__":
     data_1["sex"] = data_1["sex"].map(lambda x: 0 if x=="F" else 1)
     df = data_1.copy()
 
-    #(395,33) = (row,column)
-    print(df.shape)
+    # #(395,34) = (row,column)
+    # print(df.shape)
 
-    # column isimlerini, kaç satırda null olmadığını ve data tipini gösteriyor.
-    print(df.info())
-    print(df.dtypes)
-    # kaç tane aynı satırdan var bunu buluyor.
-    print(df.duplicated().sum())
+    # # column isimlerini, kaç satırda null olmadığını ve data tipini gösteriyor.
+    # print(df.info())
+    # # kaç tane aynı satırdan var bunu buluyor.
+    # print(df.duplicated().sum())
 
-
-    print(missing(df))
-    print(f'Numerical Columns:  {get_numerical_columns(df)}')
-    print(f'Categorical Columns:  {get_categorical_columns(df)}')
-    print(f'Categorical unique:  {get_categorical_number_of_unique(df)}')
+    # print(missing(df))
+    # print(f'Numerical Columns:  {get_numerical_columns(df)}')
+    # print(f'Categorical Columns:  {get_categorical_columns(df)}')
+    # print(f'Categorical unique:  {get_categorical_number_of_unique(df)}')
 
     # sex_percentage(df)
     # romantic_percentage(df)
@@ -627,7 +661,7 @@ if __name__ == "__main__":
     # family_support_percentage(df)
     # school_support_percentage(df)
 
-    # # print(df.head())
+    # # # print(df.head())
 
     # numerical= data.select_dtypes('number').columns
     # categorical = data.select_dtypes('object').columns
@@ -641,11 +675,17 @@ if __name__ == "__main__":
     # print(data[data["romantic"] == "no"]["sex"].value_counts())
     
     # print("grade and family job relation")
-    # grade_family_relation(data,"father","G1","at_home")
+    # grade_family_relation(data,"mother","final_grade","other")
+    # print()
+    # print("grade and family job relation")
+    # grade_family_relation(data,"father","final_grade","other")
     # print()
 
     # print("grade and family education relation")
-    # grade_family_education_relation(data,"mother","G1",2)
+    # grade_family_education_relation(data,"mother","final_grade",4)
+    # print()
+    # print("grade and family education relation")
+    # grade_family_education_relation(data,"father","final_grade",4)
     # print()
 
     # print("gender and family size relation")
@@ -656,48 +696,50 @@ if __name__ == "__main__":
     # family_size_school_relation(data)
     # print()
     
-    # gender_family_quality_relation(data,"male","famrel")
+    gender_family_quality_relation(data,"male","famrel")
+    print()
+    gender_family_quality_relation(data,"female","famrel")
 
     # absences_gender_relation(data)
 
-    data_converted = convert_categorical_to_binary(data)
-    X = data_converted.values
-    y = data_converted["final_grade"].values
+    # data_converted = convert_categorical_to_binary(data)
+    # X = data_converted.values
+    # y = data_converted["final_grade"].values
     
-    # 33. column(yani final_Grade'i siliyorum.)
-    X = np.delete(X,[33],axis=1)
-    X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3,random_state=0)
+    # # 33. column(yani final_Grade'i siliyorum.)
+    # X = np.delete(X,[33],axis=1)
+    # X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3,random_state=0)
 
-    decisionTreeScore,decisionTreePred, decisionTreePredProb= decisionTree(X_train,y_train,X_test,y_test)    
-    randomForestScore,randomForestPred,randomForestPredProb = randomForest(X_train,y_train,X_test,y_test)
-    naiveBayesScore,naiveBayesPred,naiveBayesPredProb = NaiveBayes(X_train,y_train,X_test,y_test)    
-    gradientBoostingScore,gradientBoostingPred,gradientBoostingPredProb = GradientBoosting(X_train,y_train,X_test,y_test)
-    gradientBoostingEstimatorScore,gradientBoostingEstimatorPred,gradientBoostingEstimatorPredProb = GradientBoostingWithEstimator(X_train,y_train,X_test,y_test,3)
-    knnScore,knnPred,knnPredProb = knn(X_train,y_train,X_test,y_test)
-    svmScore,svmPred,svmPredProb = svm(X_train,y_train,X_test,y_test)
-    logisticRegressionScore,logisticRegressionPred,logisticRegressionPredProb = logisticRegression(X_train,y_train,X_test,y_test)
+    # decisionTreeScore,decisionTreePred, decisionTreePredProb= decisionTree(X_train,y_train,X_test,y_test)    
+    # randomForestScore,randomForestPred,randomForestPredProb = randomForest(X_train,y_train,X_test,y_test)
+    # naiveBayesScore,naiveBayesPred,naiveBayesPredProb = NaiveBayes(X_train,y_train,X_test,y_test)    
+    # gradientBoostingScore,gradientBoostingPred,gradientBoostingPredProb = GradientBoosting(X_train,y_train,X_test,y_test)
+    # gradientBoostingEstimatorScore,gradientBoostingEstimatorPred,gradientBoostingEstimatorPredProb = GradientBoostingWithEstimator(X_train,y_train,X_test,y_test,3)
+    # knnScore,knnPred,knnPredProb = knn(X_train,y_train,X_test,y_test)
+    # svmScore,svmPred,svmPredProb = svm(X_train,y_train,X_test,y_test)
+    # logisticRegressionScore,logisticRegressionPred,logisticRegressionPredProb = logisticRegression(X_train,y_train,X_test,y_test)
     
-    decision_tree_auc_score = roc_auc_score(y_test, decisionTreePredProb,multi_class="ovo")
-    random_forest_auc_score = roc_auc_score(y_test, randomForestPredProb,multi_class="ovo")
-    naiveBayes_auc_score = roc_auc_score(y_test, naiveBayesPredProb,multi_class="ovo")
-    gradientBoosting_auc_score = roc_auc_score(y_test, gradientBoostingPredProb,multi_class="ovo")
-    gradientBoostingEstimator_auc_score = roc_auc_score(y_test, gradientBoostingEstimatorPredProb,multi_class="ovo")
-    knn_auc_score = roc_auc_score(y_test, knnPredProb,multi_class="ovo")
-    svm_auc_score = roc_auc_score(y_test, svmPredProb,multi_class="ovo")
-    logisticRegression_auc_score = roc_auc_score(y_test, logisticRegressionPredProb,multi_class="ovo")
+    # decision_tree_auc_score = roc_auc_score(y_test, decisionTreePredProb,multi_class="ovo")
+    # random_forest_auc_score = roc_auc_score(y_test, randomForestPredProb,multi_class="ovo")
+    # naiveBayes_auc_score = roc_auc_score(y_test, naiveBayesPredProb,multi_class="ovo")
+    # gradientBoosting_auc_score = roc_auc_score(y_test, gradientBoostingPredProb,multi_class="ovo")
+    # gradientBoostingEstimator_auc_score = roc_auc_score(y_test, gradientBoostingEstimatorPredProb,multi_class="ovo")
+    # knn_auc_score = roc_auc_score(y_test, knnPredProb,multi_class="ovo")
+    # svm_auc_score = roc_auc_score(y_test, svmPredProb,multi_class="ovo")
+    # logisticRegression_auc_score = roc_auc_score(y_test, logisticRegressionPredProb,multi_class="ovo")
     
-    x = PrettyTable()
-    x.field_names = ["Algorithm", "Accuracy Score","AUC Score"]
-    x.add_row(["decisionTree", decisionTreeScore,decision_tree_auc_score])
-    x.add_row(["randomForest", randomForestScore,random_forest_auc_score])
-    x.add_row(["NaiveBayes", naiveBayesScore,naiveBayes_auc_score])
-    x.add_row(["GradientBoosting", gradientBoostingScore,gradientBoosting_auc_score])
-    x.add_row(["GradientBoostingWithEstimator", gradientBoostingEstimatorScore,gradientBoostingEstimator_auc_score])
-    x.add_row(["KNN", knnScore,knn_auc_score])
-    x.add_row(["SVM", svmScore,svm_auc_score])
-    x.add_row(["logisticRegression", logisticRegressionScore,logisticRegression_auc_score])
+    # x = PrettyTable()
+    # x.field_names = ["Algorithm", "Accuracy Score","AUC Score"]
+    # x.add_row(["decisionTree", decisionTreeScore,decision_tree_auc_score])
+    # x.add_row(["randomForest", randomForestScore,random_forest_auc_score])
+    # x.add_row(["NaiveBayes", naiveBayesScore,naiveBayes_auc_score])
+    # x.add_row(["GradientBoosting", gradientBoostingScore,gradientBoosting_auc_score])
+    # x.add_row(["GradientBoostingWithEstimator", gradientBoostingEstimatorScore,gradientBoostingEstimator_auc_score])
+    # x.add_row(["KNN", knnScore,knn_auc_score])
+    # x.add_row(["SVM", svmScore,svm_auc_score])
+    # x.add_row(["logisticRegression", logisticRegressionScore,logisticRegression_auc_score])
 
-    print(x)
+    # print(x)
 
 
 
