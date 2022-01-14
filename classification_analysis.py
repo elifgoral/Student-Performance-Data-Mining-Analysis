@@ -18,6 +18,11 @@ import seaborn as sns
 from prettytable import PrettyTable
 from sklearn.metrics import confusion_matrix
 
+from sklearn.decomposition import PCA
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn import datasets
+from mlxtend.feature_selection import SequentialFeatureSelector as SFS
+
 warnings.filterwarnings("ignore")
 #.\myenv\Scripts\activate
 
@@ -568,6 +573,81 @@ def svm(X_train, y_train,X_test,y_test):
     print()
     return score,y_pred, y_pred_prob
 
+def pca(X,y):
+    target_names = ["AA","BA","BB","CB","CC","DC","DD","FF"]
+    colors = ["navy", "turquoise", "darkorange","pink","red","black","yellow","green"]
+
+    pca = PCA(n_components=2)
+    X_r = pca.fit(X).transform(X)
+    plt.figure()
+    lw = 2
+
+    for color, i, target_name in zip(colors, [0, 1, 2,3,4,5,6,7], target_names):
+        plt.scatter(
+            X_r[y == i, 0], X_r[y == i, 1], color=color, alpha=0.8, lw=lw, label=target_name
+        )
+    plt.legend(loc="best", shadow=False, scatterpoints=1)
+    plt.title("PCA of dataset")
+
+def lda(X,y):
+    target_names = ["AA","BA","BB","CB","CC","DC","DD","FF"]
+    colors = ["navy", "turquoise", "darkorange","pink","red","black","yellow","green"]
+
+    lda = LinearDiscriminantAnalysis(n_components=2)
+    X_r2 = lda.fit(X, y).transform(X)
+    plt.figure()
+    for color, i, target_name in zip(colors, [0, 1, 2,3,4,5,6,7], target_names):
+        plt.scatter(
+            X_r2[y == i, 0], X_r2[y == i, 1], alpha=0.8, color=color, label=target_name
+        )
+    plt.legend(loc="best", shadow=False, scatterpoints=1)
+    plt.title("LDA of dataset")
+
+    plt.show()
+
+
+def final_grade_according_to_attribute(data):
+    fig = px.histogram(data_frame=data, x="final_grade", color="sex", width=400, height=400)
+    fig.show()
+
+    fig = px.histogram(data_frame=data, x="final_grade", color="schoolsup", width=400, height=400)
+    fig.show()
+    
+    fig = px.histogram(data_frame=data, x="final_grade", color="famsup", width=400, height=400)
+    fig.show()
+
+    fig = px.histogram(data_frame=data, x="final_grade", color="paid", width=400, height=400)
+    fig.show()
+
+    fig = px.histogram(data_frame=data, x="final_grade", color="romantic", width=400, height=400)
+    fig.show()
+    
+    fig = px.histogram(data_frame=data, x="final_grade", color="address", width=400, height=400)
+    fig.show()
+
+    fig = px.histogram(data_frame=data, x="final_grade", color="nursery", width=400, height=400)
+    fig.show()
+    
+    fig = px.histogram(data_frame=data, x="final_grade", color="higher", width=400, height=400)
+    fig.show()
+
+    fig = px.histogram(data_frame=data, x="final_grade", color="activities", width=400, height=400)
+    fig.show()
+
+    fig = px.histogram(data_frame=data, x="final_grade", color="internet", width=400, height=400)
+    fig.show()
+
+    fig = px.histogram(data_frame=data, x="final_grade", color="famsize", width=400, height=400)
+    fig.show()
+    
+    data_famrel = data[data["sex"] == "male"]
+    fig = px.histogram(data_frame=data_famrel, x="final_grade", color="famrel", width=400, height=400)
+    fig.show()
+    
+    data_famrel = data[data["sex"] == "female"]
+    fig = px.histogram(data_frame=data_famrel, x="final_grade", color="famrel", width=400, height=400)
+    fig.show()
+
 
 if __name__ == "__main__":
 
@@ -589,49 +669,8 @@ if __name__ == "__main__":
     data.loc[((data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) >= 40) & ( (data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) <= 45), 'final_grade'] = 'DD' 
     data.loc[((data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) >= 0) & ( (data.G1 * 0.25 ) + (data.G2 * 0.25) + (data.G3 * 0.5) <= 40), 'final_grade'] = 'FF' 
 
-    
-    # fig = px.histogram(data_frame=data, x="final_grade", color="sex", width=400, height=400)
-    # fig.show()
-
-    # fig = px.histogram(data_frame=data, x="final_grade", color="schoolsup", width=400, height=400)
-    # fig.show()
-    
-    # fig = px.histogram(data_frame=data, x="final_grade", color="famsup", width=400, height=400)
-    # fig.show()
-
-    # fig = px.histogram(data_frame=data, x="final_grade", color="paid", width=400, height=400)
-    # fig.show()
-
-    # fig = px.histogram(data_frame=data, x="final_grade", color="romantic", width=400, height=400)
-    # fig.show()
-    
-    # fig = px.histogram(data_frame=data, x="final_grade", color="address", width=400, height=400)
-    # fig.show()
-
-    # fig = px.histogram(data_frame=data, x="final_grade", color="nursery", width=400, height=400)
-    # fig.show()
-    
-    # fig = px.histogram(data_frame=data, x="final_grade", color="higher", width=400, height=400)
-    # fig.show()
-
-    # fig = px.histogram(data_frame=data, x="final_grade", color="activities", width=400, height=400)
-    # fig.show()
-
-    # fig = px.histogram(data_frame=data, x="final_grade", color="internet", width=400, height=400)
-    # fig.show()
-
-    # fig = px.histogram(data_frame=data, x="final_grade", color="famsize", width=400, height=400)
-    # fig.show()
-    
-    data_famrel = data[data["sex"] == "male"]
-    fig = px.histogram(data_frame=data_famrel, x="final_grade", color="famrel", width=400, height=400)
-    fig.show()
-    
-    data_famrel = data[data["sex"] == "female"]
-    fig = px.histogram(data_frame=data_famrel, x="final_grade", color="famrel", width=400, height=400)
-    fig.show()
-
-
+    # final_grade_according_to_attribute(data)
+  
     # data'daki sex string olduğu için ve kıyaslanabilir bir şey olsun diye
     # F: 0 , M:1 yapıyoruz
     data_1 = data.copy()
@@ -696,19 +735,19 @@ if __name__ == "__main__":
     # family_size_school_relation(data)
     # print()
     
-    gender_family_quality_relation(data,"male","famrel")
-    print()
-    gender_family_quality_relation(data,"female","famrel")
+    # gender_family_quality_relation(data,"male","famrel")
+    # print()
+    # gender_family_quality_relation(data,"female","famrel")
 
     # absences_gender_relation(data)
 
-    # data_converted = convert_categorical_to_binary(data)
-    # X = data_converted.values
-    # y = data_converted["final_grade"].values
+    data_converted = convert_categorical_to_binary(data)
+    X = data_converted.values
+    y = data_converted["final_grade"].values
     
-    # # 33. column(yani final_Grade'i siliyorum.)
-    # X = np.delete(X,[33],axis=1)
-    # X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3,random_state=0)
+    # 33. column(yani final_Grade'i siliyorum.)
+    X = np.delete(X,[33],axis=1)
+    X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3,random_state=0)
 
     # decisionTreeScore,decisionTreePred, decisionTreePredProb= decisionTree(X_train,y_train,X_test,y_test)    
     # randomForestScore,randomForestPred,randomForestPredProb = randomForest(X_train,y_train,X_test,y_test)
@@ -741,6 +780,7 @@ if __name__ == "__main__":
 
     # print(x)
 
-
+    pca(X,y)
+    lda(X,y)
 
 
