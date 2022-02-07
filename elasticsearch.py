@@ -60,11 +60,9 @@ def upload_json_doc(index_name, json_doc, id):
         raise Exception("Elasticsearch upload json document error")
 
 def upload_csv_file():
-    # dataset'i csv dosyasından okuyor.
     data = pd.read_csv("student-mat.csv",sep=";")
 
     data['id'] = 'NA'
-    #   ilk önce grade'lar 0-20 arasında olduğu için hepsini 5 ile çarpıyorum.
     data["G1"] = data["G1"].apply(lambda x: x * 5)
     data["G2"] = data["G2"].apply(lambda x: x * 5)
     data["G3"] = data["G3"].apply(lambda x: x * 5)
